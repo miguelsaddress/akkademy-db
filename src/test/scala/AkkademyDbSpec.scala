@@ -27,11 +27,11 @@ class AkkademyDbSpec extends FunSpecLike with Matchers with BeforeAndAfterEach w
                 akkademyDb.map.get("key") should equal(Some("value"))
             }
 
-            it("should return true"){
+            it("should return given key"){
                 val actorRef = TestActorRef(new AkkademyDb)
                 val futureResult = actorRef ? SetRequest("key", "value")
                 whenReady(futureResult) { result => 
-                    result should equal(true)
+                    result should equal("key")
                 }
             }
         }
@@ -45,11 +45,11 @@ class AkkademyDbSpec extends FunSpecLike with Matchers with BeforeAndAfterEach w
                 akkademyDb.map.get("key") should equal(Some("value"))
             }
 
-            it("should return true"){
+            it("should return given key"){
                 val actorRef = TestActorRef(new AkkademyDb)
                 val futureResult = actorRef ? SetIfNotExistsRequest("key", "value")
                 whenReady(futureResult) { result =>
-                    result should equal(true)
+                    result should equal("key")
                 }
             }
 
@@ -62,12 +62,12 @@ class AkkademyDbSpec extends FunSpecLike with Matchers with BeforeAndAfterEach w
                 akkademyDb.map.get("key") should equal(Some("value"))
             }
 
-            it("should return true even if key already exists") {
+            it("should return given key even if key already exists") {
                 val actorRef = TestActorRef(new AkkademyDb)
                 actorRef ! SetIfNotExistsRequest("key", "value")
                 val futureResult = actorRef ? SetIfNotExistsRequest("key", "another value")
                 whenReady(futureResult) { result =>
-                    result should equal(true)
+                    result should equal("key")
                 }
             }
         }
@@ -94,12 +94,12 @@ class AkkademyDbSpec extends FunSpecLike with Matchers with BeforeAndAfterEach w
         }
 
         describe("given DeleteRequest") {
-            it("should return true if key existed") {
+            it("should return given key if key existed") {
                 val actorRef = TestActorRef(new AkkademyDb)
                 actorRef ! SetRequest("key", "value")
                 val futureResult = actorRef ? DeleteRequest("key")
                 whenReady(futureResult) { result =>
-                    result should equal(true)
+                    result should equal("key")
                 }
             }
 
@@ -108,7 +108,7 @@ class AkkademyDbSpec extends FunSpecLike with Matchers with BeforeAndAfterEach w
                 actorRef ! SetRequest("key", "value")
                 val futureResult = actorRef ? DeleteRequest("key")
                 whenReady(futureResult) { result => 
-                    result should equal(true)
+                    result should equal("key")
                 }
                 val akkademyDb = actorRef.underlyingActor
                 akkademyDb.map shouldNot contain("key")

@@ -15,12 +15,12 @@ class AkkademyDb extends Actor {
         case SetRequest(key, value) => {
             log.info("received SetRequest - key: {}  - value: {}", key, value)
             map.put(key, value)
-            sender() ! Status.Success(true)
+            sender() ! Status.Success(key)
         }
         case SetIfNotExistsRequest(key, value) => {
             log.info("received SetIfNotExistsRequest - key: {}  - value: {}", key, value)
             if (!map.contains(key)) map.put(key, value)
-            sender() ! Status.Success(true)
+            sender() ! Status.Success(key)
         }
         case GetRequest(key) => {
             log.info("received GetRequest - key {}", key)
@@ -33,7 +33,7 @@ class AkkademyDb extends Actor {
             log.info("received DeleteRequest - key {}", key)
             if (map.contains(key)) {
                 map -= key
-                sender() ! Status.Success(true)
+                sender() ! Status.Success(key)
             } else {
                 sender() ! Status.Failure(KeyNotFoundException(key))
             }
