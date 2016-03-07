@@ -17,6 +17,11 @@ class AkkademyDb extends Actor {
             map.put(key, value)
             sender() ! Status.Success(true)
         }
+        case SetIfNotExistsRequest(key, value) => {
+            log.info("received SetIfNotExistsRequest - key: {}  - value: {}", key, value)
+            if (!map.contains(key)) map.put(key, value)
+            sender() ! Status.Success(true)
+        }
         case GetRequest(key) => {
             log.info("received GetRequest - key {}", key)
             map.get(key) match {
