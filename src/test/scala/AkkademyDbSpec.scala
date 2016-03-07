@@ -93,6 +93,37 @@ class AkkademyDbSpec extends FunSpecLike with Matchers with BeforeAndAfterEach w
             }
         }
 
+        describe("given DeleteRequest") {
+            it("should return true if key existed") {
+                val actorRef = TestActorRef(new AkkademyDb)
+                actorRef ! SetRequest("key", "value")
+                val futureResult = actorRef ? DeleteRequest("key")
+                whenReady(futureResult) { result =>
+                    result should equal(true)
+                }
+            }
+
+            it("should delete key if it existed") {
+                val actorRef = TestActorRef(new AkkademyDb)
+                actorRef ! SetRequest("key", "value")
+                val futureResult = actorRef ? DeleteRequest("key")
+                whenReady(futureResult) { result => 
+                    result should equal(true)
+                }
+                val akkademyDb = actorRef.underlyingActor
+                akkademyDb.map shouldNot contain("key")
+            }
+
+            it("should fail with KeyNotFoundException if key did not exist") {
+                val actorRef = TestActorRef(new AkkademyDb)
+                val futureResult = actorRef ? DeleteRequest("unknown")
+                whenReady(futureResult.failed) { ex =>
+                    ex shouldBe a [KeyNotFoundException]
+                    ex.asInstanceOf[KeyNotFoundException].key should equal("unknown")
+                }
+            }
+        }
+
         describe("given an unkown type of message") {
             it("should fail with ClassNotFoundException") {
                 case class UnkownMessage()

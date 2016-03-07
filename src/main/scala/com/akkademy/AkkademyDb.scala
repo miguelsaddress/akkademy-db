@@ -29,6 +29,15 @@ class AkkademyDb extends Actor {
                 case None => sender() ! Status.Failure (KeyNotFoundException(key))
             }
         }
+        case DeleteRequest(key) => {
+            log.info("received DeleteRequest - key {}", key)
+            if (map.contains(key)) {
+                map -= key
+                sender() ! Status.Success(true)
+            } else {
+                sender() ! Status.Failure(KeyNotFoundException(key))
+            }
+        }
         case o => {
             log.info("received unknown message: {}", o);
             sender() ! Status.Failure (new ClassNotFoundException)
