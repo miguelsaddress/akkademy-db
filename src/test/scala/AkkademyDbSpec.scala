@@ -12,9 +12,7 @@ import akka.pattern.ask
 import scala.util.Success
 import scala.concurrent.duration._
 import scala.concurrent.Future
-import com.akkademy.messages.SetRequest
-import com.akkademy.messages.GetRequest
-import com.akkademy.messages.KeyNotFoundException
+import com.akkademy.messages._
 
 class AkkademyDbSpec extends FunSpecLike with Matchers with BeforeAndAfterEach with ScalaFutures {
     implicit val system = ActorSystem()
